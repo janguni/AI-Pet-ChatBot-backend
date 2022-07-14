@@ -20,12 +20,12 @@ public class UserController {
 //    @Autowired
 //    private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @ResponseBody
     @PostMapping("/join")
     public String join(@RequestBody UserDto userDto){
         String email = userDto.getEmail();
         String password = userDto.getPassword();
-        System.out.println("email = " + email);
-        System.out.println("password = " + password);
+        log.info("email={}, password={}", email, password);
         User user = new User(email, password);
         // 회원가입
         userServiceImpl.join(user);
@@ -35,7 +35,6 @@ public class UserController {
 //      user.setPassword(encPassword);
 
         List<User> users = userRepository.findAll();
-        log.info("user ok", user);
         return "OK";
     }
 }
