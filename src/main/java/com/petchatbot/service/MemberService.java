@@ -4,7 +4,12 @@ import com.petchatbot.domain.Member;
 
 public interface MemberService {
 
+    // 기존 회원인지 체크
+    boolean isExistingMember(String email);
+
     // 회원가입
     void join(Member member);
+
+
 
 }

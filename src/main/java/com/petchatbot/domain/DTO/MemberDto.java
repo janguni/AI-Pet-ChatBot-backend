@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
-public class UserDto {
+public class MemberDto {
 
     @Id
     @GeneratedValue
@@ -16,10 +16,10 @@ public class UserDto {
     @Column(nullable = false, unique = true, length=50)
     private String password;
 
-    public UserDto() {
+    public MemberDto() {
     }
 
-    public UserDto(String email, String password) {
+    public MemberDto(String email, String password) {
         this.email = email;
         this.password = password;
     }
