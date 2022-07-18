@@ -1,4 +1,4 @@
-package com.petchatbot.domain;
+package com.petchatbot.domain.model;
 
 import lombok.Getter;
 

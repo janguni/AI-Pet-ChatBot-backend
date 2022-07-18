@@ -1,4 +1,4 @@
-package com.petchatbot.domain;
+package com.petchatbot.domain.requestAndResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

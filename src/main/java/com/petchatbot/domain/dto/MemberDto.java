@@ -1,4 +1,4 @@
-package com.petchatbot.domain.DTO;
+package com.petchatbot.domain.dto;
 
 import lombok.Getter;
 
@@ -9,8 +9,6 @@ import javax.persistence.*;
 public class MemberDto {
 
     @Id
-    @GeneratedValue
-    private Long serial;
     @Column(nullable = false, unique = true, length=50)
     private String email;
     @Column(nullable = false, unique = true, length=50)
@@ -23,5 +21,4 @@ public class MemberDto {
         this.email = email;
         this.password = password;
     }
-
 }

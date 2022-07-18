@@ -1,7 +1,7 @@
 package com.petchatbot.repository;
 
 
-import com.petchatbot.domain.Member;
+import com.petchatbot.domain.model.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface MemberRepository extends JpaRepository<Member, Integer> {

@@ -2,17 +2,15 @@ package com.petchatbot.controller;
 
 import com.petchatbot.config.ResponseMessage;
 import com.petchatbot.config.StatusCode;
-import com.petchatbot.domain.DTO.MemberDto;
-import com.petchatbot.domain.DefaultRes;
-import com.petchatbot.domain.Member;
+import com.petchatbot.domain.requestAndResponse.LoginReq;
+import com.petchatbot.domain.dto.MemberDto;
+import com.petchatbot.domain.requestAndResponse.DefaultRes;
 import com.petchatbot.repository.MemberRepository;
 import com.petchatbot.service.MemberServiceImpl;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -23,32 +21,27 @@ public class MemberController {
     private final MemberRepository memberRepository;
     private final MemberServiceImpl memberServiceImpl;
 
-    /**
-     * 이메일 중복확인 후 회원가입
-     * @param memberDto
-     * @param againPassWord
-     * @return
-     */
-
     @PostMapping("/join")
-    public ResponseEntity<String> join(@RequestBody MemberDto memberDto, @RequestParam("againPassword") String againPassWord){
+    public ResponseEntity<String> join(@RequestBody LoginReq loginRequest){
+        String email = loginRequest.getEmail();
+        String password = loginRequest.getPassword();
+        String againPassword = loginRequest.getAgainPassword();
 
-        String email = memberDto.getEmail();
-        String password = memberDto.getPassword();
-        log.info("email={}, password={}", email, password);
-
-        if (password.equals(againPassWord)){
-            return new ResponseEntity(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.PASSWORD_WRONG), HttpStatus.OK);
+        if (!memberServiceImpl.isEqualPassword(password, againPassword)){
+            return new ResponseEntity(
+                    DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.PASSWORD_WRONG),
+                    HttpStatus.OK);
         }
 
         // 성공 로직
-
-        Member member = new Member(email, password);
-        memberServiceImpl.join(member);
+        MemberDto memberDto = new MemberDto(email, password);
+        log.info("email={}, password={}", email, password);
+        memberServiceImpl.join(memberDto);
 
         // 인증 메일 발송
 
-        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.LOGIN_SUCCESS), HttpStatus.OK);
+
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.SEND_EMAIL), HttpStatus.OK);
     }
 
     /**
