@@ -2,17 +2,14 @@ package com.petchatbot.config.auth.jwt;
 
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.google.gson.JsonObject;
 import com.petchatbot.config.ResponseMessage;
 import com.petchatbot.config.StatusCode;
 import com.petchatbot.config.auth.PrincipalDetails;
 import com.petchatbot.domain.model.Member;
-import com.petchatbot.domain.requestAndResponse.DefaultRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
@@ -63,7 +60,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
             log.error("login 실패");
             throw new RuntimeException();
         }
-        //return null;
     }
 
     // attemptAuthentication 함수가 정상적으로 동작하면 호출되는 함수
@@ -82,6 +78,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .sign(Algorithm.HMAC512("cos")); // secret key
 
         response.addHeader("Authorization", "Bearer "+jwtToken);
+        setSuccessResponse(request, response);
     }
 
     @Override
@@ -90,12 +87,30 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         setFailResponse(request, response);
     }
 
+    private void setSuccessResponse(HttpServletRequest request, HttpServletResponse response) {
+
+        try{
+            response.setStatus(200);
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("statusCode", StatusCode.OK);
+            jsonObject.addProperty("responseMessage", ResponseMessage.LOGIN_SUCCESS);
+            response.getWriter().print(jsonObject);
+        } catch (IOException e){
+            log.error("로그인 정상 처리에서 오류");
+        }
+    }
+
     private void setFailResponse(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        response.setStatus(200);
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("statusCode", StatusCode.UNAUTHORIZED);
-        jsonObject.addProperty("responseMessage", ResponseMessage.LOGIN_FAIL);
-        response.getWriter().print(jsonObject);
+        try{
+            response.setStatus(200);
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.addProperty("statusCode", StatusCode.UNAUTHORIZED);
+            jsonObject.addProperty("responseMessage", ResponseMessage.LOGIN_FAIL);
+            response.getWriter().print(jsonObject);
+        } catch (IOException e){
+            log.error("로그인 실패 처리에서 오류");
+        }
+
 
     }
 }

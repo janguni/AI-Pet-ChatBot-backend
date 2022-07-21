@@ -40,5 +40,10 @@ public class MemberController {
         return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.SEND_EMAIL), HttpStatus.OK);
     }
 
+    @GetMapping("/api/v1/user")
+    public String user(){
+        return "user";
+    }
+
 }
 

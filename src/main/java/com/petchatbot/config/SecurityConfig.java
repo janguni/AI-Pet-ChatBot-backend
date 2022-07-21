@@ -36,18 +36,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable()
                 .httpBasic().disable()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
-//                .addFilter(new JwtAuthorizationFilter(authenticationManager(), memberRepository))
-//                .authorizeRequests()
+                .addFilter(new JwtAuthorizationFilter(authenticationManager(), memberRepository))
+                .authorizeRequests()
 //                .antMatchers("/join/**").permitAll()
 //                .antMatchers("/login/**").permitAll()
-//                .anyRequest().permitAll();
-                .authorizeRequests()
                 .antMatchers("/api/v1/user/**")
-                .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
-                .antMatchers("/api/v1/manager/**")
-                .access("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
-                .antMatchers("/api/v1/admin/**")
-                .access("hasRole('ROLE_ADMIN')")
+                .access("hasRole('ROLE_USER')")
                 .anyRequest().permitAll();
 
     }
