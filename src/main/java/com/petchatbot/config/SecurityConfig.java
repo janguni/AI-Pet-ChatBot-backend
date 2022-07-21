@@ -1,33 +1,54 @@
 package com.petchatbot.config;
 
+import com.petchatbot.config.auth.jwt.JwtAuthenticationFilter;
+import com.petchatbot.config.auth.jwt.JwtAuthorizationFilter;
+import com.petchatbot.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.web.filter.CorsFilter;
 
 @EnableWebSecurity
+@RequiredArgsConstructor
+@Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Bean
-    public BCryptPasswordEncoder encodePwe(){
-        return new BCryptPasswordEncoder();
-    }
+    private final CorsFilter corsFilter;
+    private final MemberRepository memberRepository;
 
-    // 일단 인증 풀어줌
-    @Override
-    public void configure(WebSecurity web) throws Exception
-    {
-        web.ignoring().antMatchers("/css/**", "/script/**", "image/**", "/fonts/**", "lib/**");
-    }
+
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception
     {
         http.csrf().disable();
 
-        http.authorizeRequests()
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) //session 사용x
+        .and()
+                .addFilter(corsFilter) //@CrossOrigin(인증X), 시큐리티 필터에 인증(O)
+                .formLogin().disable()
+                .httpBasic().disable()
+                .addFilter(new JwtAuthenticationFilter(authenticationManager()))
+//                .addFilter(new JwtAuthorizationFilter(authenticationManager(), memberRepository))
+//                .authorizeRequests()
+//                .antMatchers("/join/**").permitAll()
+//                .antMatchers("/login/**").permitAll()
+//                .anyRequest().permitAll();
+                .authorizeRequests()
+                .antMatchers("/api/v1/user/**")
+                .access("hasRole('ROLE_USER') or hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+                .antMatchers("/api/v1/manager/**")
+                .access("hasRole('ROLE_MANAGER') or hasRole('ROLE_ADMIN')")
+                .antMatchers("/api/v1/admin/**")
+                .access("hasRole('ROLE_ADMIN')")
+                .anyRequest().permitAll();
 
-                .antMatchers("/join/**").permitAll();
     }
 }

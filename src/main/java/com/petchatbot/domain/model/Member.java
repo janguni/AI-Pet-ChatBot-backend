@@ -8,6 +8,9 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 
 @Getter
@@ -17,9 +20,9 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long member_serial;
-    @NotEmpty(message = "이메일은 필수 입력 값입니다.")
     private String memberEmail;
     private String memberPassword;
+    private String roles; // USER, ADMIN
 
     public Member() {
     }
@@ -32,6 +35,5 @@ public class Member {
     public void changePassword(String password){
         this.memberPassword = password;
     }
-
 
 }

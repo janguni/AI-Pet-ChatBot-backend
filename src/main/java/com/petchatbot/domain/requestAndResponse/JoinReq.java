@@ -4,9 +4,7 @@ import lombok.Data;
 import lombok.Getter;
 
 @Data
-public class LoginReq {
-
+public class JoinReq {
     private String email;
     private String password;
-    private String againPassword;
 }

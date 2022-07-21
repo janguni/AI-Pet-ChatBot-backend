@@ -6,6 +6,9 @@ import com.petchatbot.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
@@ -31,20 +34,25 @@ public class MemberServiceImpl implements MemberService {
     }
 
     public void join(MemberDto memberDto){
-        //validateDuplicateMember(member);
+        validateDuplicateMember(memberDto);
         String email = memberDto.getEmail();
         String password = memberDto.getPassword();
         Member member = new Member(email, password);
         memberRepository.save(member);
     }
 
-//    private void validateDuplicateMember(Member member) {
-//        Member findMember = memberRepository.findByMemberEmail(member.getMemberEmail());
-//
-//        if (findMember != null){
-//            throw new IllegalStateException("이미 가입된 회원입니다.");
-//        }
-//    }
+    @Override
+    public void loginFail(HttpServletRequest request, HttpServletResponse response) {
+
+    }
+
+    private void validateDuplicateMember(MemberDto memberDto) {
+        Member findMember = memberRepository.findByMemberEmail(memberDto.getEmail());
+
+        if (findMember != null){
+            throw new IllegalStateException("이미 가입된 회원입니다.");
+        }
+    }
 
 
 }
