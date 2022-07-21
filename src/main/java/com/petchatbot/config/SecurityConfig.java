@@ -1,5 +1,6 @@
 package com.petchatbot.config;
 
+import com.petchatbot.config.auth.CustomAuthenticationEntryPoint;
 import com.petchatbot.config.auth.jwt.JwtAuthenticationFilter;
 import com.petchatbot.config.auth.jwt.JwtAuthorizationFilter;
 import com.petchatbot.repository.MemberRepository;
@@ -22,9 +23,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     private final CorsFilter corsFilter;
     private final MemberRepository memberRepository;
 
-
-
-
     @Override
     protected void configure(HttpSecurity http) throws Exception
     {
@@ -37,12 +35,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .httpBasic().disable()
                 .addFilter(new JwtAuthenticationFilter(authenticationManager()))
                 .addFilter(new JwtAuthorizationFilter(authenticationManager(), memberRepository))
+                .exceptionHandling()
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
+                .and()
                 .authorizeRequests()
-//                .antMatchers("/join/**").permitAll()
-//                .antMatchers("/login/**").permitAll()
-                .antMatchers("/api/v1/user/**")
-                .access("hasRole('ROLE_USER')")
-                .anyRequest().permitAll();
+                .antMatchers("/", "/login", "/join").permitAll()
+                .anyRequest().authenticated();
+
+
 
     }
 }

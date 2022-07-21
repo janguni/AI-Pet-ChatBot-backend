@@ -74,7 +74,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                 .withSubject("cos토큰")
                 .withExpiresAt(new Date(System.currentTimeMillis() + (60000 * 10)))
                 .withClaim("id", principalDetails.getMember().getMember_serial())
-                .withClaim("username", principalDetails.getMember().getMemberEmail())
+                .withClaim("email", principalDetails.getMember().getMemberEmail())
                 .sign(Algorithm.HMAC512("cos")); // secret key
 
         response.addHeader("Authorization", "Bearer "+jwtToken);
@@ -88,7 +88,6 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     }
 
     private void setSuccessResponse(HttpServletRequest request, HttpServletResponse response) {
-
         try{
             response.setStatus(200);
             JsonObject jsonObject = new JsonObject();
@@ -110,7 +109,5 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         } catch (IOException e){
             log.error("로그인 실패 처리에서 오류");
         }
-
-
     }
 }
