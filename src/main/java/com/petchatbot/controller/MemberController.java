@@ -31,16 +31,19 @@ public class MemberController {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @PostMapping("/validateDuplicateEmail")
+    public ResponseEntity<String> validateDuplicateEmail(@RequestBody EmailDto emailDto) {
+        log.info("validate email={}", emailDto.getReceiveMail());
+        if (memberService.isExistingMember(emailDto.getReceiveMail())){
+            return new ResponseEntity(DefaultRes.res(StatusCode.CONFLICTPERMALINK, ResponseMessage.DUPLICATE_EMAIL), HttpStatus.OK);
+        }
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.AVAILABLE_EMAIL), HttpStatus.OK);
+    }
+
     @PostMapping("/join")
     public ResponseEntity<String> join(@RequestBody JoinReq joinReq) {
         String email = joinReq.getMemberEmail();
         String password = joinReq.getMemberPassword();
-
-
-        // 이메일이 이미 있는 경우
-        if (memberService.isExistingMember(email)){
-            return new ResponseEntity(DefaultRes.res(StatusCode.CONFLICTPERMALINK, ResponseMessage.DUPLICATE_USER), HttpStatus.OK);
-        }
 
         String rawPassword = joinReq.getMemberPassword();
         String encodedPassword = bCryptPasswordEncoder.encode(rawPassword); // 패스워드 암호화

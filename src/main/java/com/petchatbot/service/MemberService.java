@@ -17,8 +17,6 @@ public interface MemberService {
     // 비밀번호 변경
     void changePassword(MemberDto memberDto);
 
-    // 로그인 실패
-    void loginFail(HttpServletRequest request, HttpServletResponse response);
 
 
 

@@ -21,20 +21,19 @@ public class MemberServiceImpl implements MemberService {
 
 
     // 기존 회원인지 체크
+    @Override
     public boolean isExistingMember(String email){
         Member findMember = memberRepository.findByMemberEmail(email);
 
-        if (findMember == null){
-            return false;
-        }
-        return true;
+        if (findMember == null){return false;}
+        else {return true;}
     }
 
 
     // 회원가입
+    @Override
     public void join(MemberDto memberDto){
         log.info("join member email= {}, password={}", memberDto.getMemberEmail(), memberDto.getMemberPassword());
-        validateDuplicateMember(memberDto);
         String memberEmail = memberDto.getMemberEmail();
         String memberPassword = memberDto.getMemberPassword() ;
         Member member = new Member(memberEmail, memberPassword);
@@ -51,18 +50,6 @@ public class MemberServiceImpl implements MemberService {
         log.info("changedMember email={}, password={}", findMember.getMemberEmail(), findMember.getMemberPassword());
     }
 
-    @Override
-    public void loginFail(HttpServletRequest request, HttpServletResponse response) {
-
-    }
-
-    private void validateDuplicateMember(MemberDto memberDto) {
-        Member findMember = memberRepository.findByMemberEmail(memberDto.getMemberEmail());
-
-        if (findMember != null){
-            throw new IllegalStateException("이미 가입된 회원입니다.");
-        }
-    }
 
 
 
