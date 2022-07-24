@@ -14,6 +14,9 @@ public interface MemberService {
     // 회원가입
     void join(MemberDto memberDto);
 
+    // 비밀번호 변경
+    void changePassword(MemberDto memberDto);
+
     // 로그인 실패
     void loginFail(HttpServletRequest request, HttpServletResponse response);
 

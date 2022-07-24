@@ -10,15 +10,15 @@ public class MemberDto {
 
     @Id
     @Column(nullable = false, unique = true, length=50)
-    private String email;
+    private String memberEmail;
     @Column(nullable = false, unique = true, length=50)
-    private String password;
+    private String memberPassword;
 
     public MemberDto() {
     }
 
-    public MemberDto(String email, String password) {
-        this.email = email;
-        this.password = password;
+    public MemberDto(String memberEmail, String memberPassword) {
+        this.memberEmail = memberEmail;
+        this.memberPassword = memberPassword;
     }
 }

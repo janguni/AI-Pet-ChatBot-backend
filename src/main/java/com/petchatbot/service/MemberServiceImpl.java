@@ -4,15 +4,21 @@ import com.petchatbot.domain.dto.MemberDto;
 import com.petchatbot.domain.model.Member;
 import com.petchatbot.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+
 
     // 기존 회원인지 체크
     public boolean isExistingMember(String email){
@@ -24,21 +30,25 @@ public class MemberServiceImpl implements MemberService {
         return true;
     }
 
-    public boolean isEqualPassword(String password, String againPassword){
-        if (password.equals(againPassword)){
-            return true;
-        }
-        else{
-            return false;
-        }
+
+    // 회원가입
+    public void join(MemberDto memberDto){
+        log.info("join member email= {}, password={}", memberDto.getMemberEmail(), memberDto.getMemberPassword());
+        validateDuplicateMember(memberDto);
+        String memberEmail = memberDto.getMemberEmail();
+        String memberPassword = memberDto.getMemberPassword() ;
+        Member member = new Member(memberEmail, memberPassword);
+        memberRepository.save(member);
     }
 
-    public void join(MemberDto memberDto){
-        validateDuplicateMember(memberDto);
-        String email = memberDto.getEmail();
-        String password = memberDto.getPassword();
-        Member member = new Member(email, password);
-        memberRepository.save(member);
+    // 비밀번호 변경
+    @Transactional
+    public void changePassword(MemberDto memberDto){
+        Member findMember = memberRepository.findByMemberEmail(memberDto.getMemberEmail());
+        String rawPassword = memberDto.getMemberPassword();
+        String encodedPassword = bCryptPasswordEncoder.encode(rawPassword);
+        findMember.changePassword(encodedPassword);
+        log.info("changedMember email={}, password={}", findMember.getMemberEmail(), findMember.getMemberPassword());
     }
 
     @Override
@@ -47,12 +57,14 @@ public class MemberServiceImpl implements MemberService {
     }
 
     private void validateDuplicateMember(MemberDto memberDto) {
-        Member findMember = memberRepository.findByMemberEmail(memberDto.getEmail());
+        Member findMember = memberRepository.findByMemberEmail(memberDto.getMemberEmail());
 
         if (findMember != null){
             throw new IllegalStateException("이미 가입된 회원입니다.");
         }
     }
+
+
 
 
 }

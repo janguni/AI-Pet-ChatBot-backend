@@ -21,7 +21,18 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: update #create update none
+      ddl-auto: create #create update none
       naming:
         physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     show-sql: true
+    format_sql : true #이쁘게 해줌
+
+  mail:
+    host: smtp.naver.com
+    port: 465
+    username: lightson23@naver.com
+    password: dnlffldnjdzk8896
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.ssl.trust: smtp.naver.com
