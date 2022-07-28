@@ -44,6 +44,9 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void changePassword(MemberDto memberDto){
         Member findMember = memberRepository.findByMemberEmail(memberDto.getMemberEmail());
+        if (memberDto.getMemberPassword() == null){
+            throw new IllegalStateException("비밀번호가 null");
+        }
         String rawPassword = memberDto.getMemberPassword();
         String encodedPassword = bCryptPasswordEncoder.encode(rawPassword);
         findMember.changePassword(encodedPassword);

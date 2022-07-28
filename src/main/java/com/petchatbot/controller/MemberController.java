@@ -2,8 +2,11 @@ package com.petchatbot.controller;
 
 import com.petchatbot.config.ResponseMessage;
 import com.petchatbot.config.StatusCode;
+import com.petchatbot.domain.dto.CodeDto;
 import com.petchatbot.domain.dto.EmailCodeDto;
 import com.petchatbot.domain.dto.EmailDto;
+import com.petchatbot.domain.model.Member;
+import com.petchatbot.domain.requestAndResponse.ChangePwReq;
 import com.petchatbot.domain.requestAndResponse.JoinReq;
 import com.petchatbot.domain.dto.MemberDto;
 import com.petchatbot.domain.requestAndResponse.DefaultRes;
@@ -94,19 +97,28 @@ public class MemberController {
 
     // 인증코드 입력 (비밀번호 변경)
     @PostMapping("/enterEmailCode/changePw")
-    public ResponseEntity<String> enterEmailCode_password(@RequestBody EmailCodeDto ecCode){
-        int sendCode = ecCode.getSendCode();
-        int receivedCode = ecCode.getReceivedCode();
-        String memberEmail = ecCode.getMemberEmail();
-        String memberPassword = ecCode.getMemberPassword();
+    public ResponseEntity<String> enterEmailCode_password(@RequestBody CodeDto codeDto){
+        int sendCode = codeDto.getSendCode();
+        int receivedCode = codeDto.getReceivedCode();
+
         if (sendCode == receivedCode){
-            MemberDto memberDto = new MemberDto(memberEmail, memberPassword);
-            memberService.changePassword(memberDto);
-            return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.CHANGE_PW), HttpStatus.OK);
+            return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.SUCCESS_EMAIL_CODE), HttpStatus.OK);
         }
         else{
-            return new ResponseEntity(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.CHANGE_PW_FAIL), HttpStatus.OK);
+            return new ResponseEntity(DefaultRes.res(StatusCode.BAD_REQUEST, ResponseMessage.WRONG_EMAIL_CODE), HttpStatus.OK);
         }
+    }
+
+    @PostMapping("/changePw")
+    public ResponseEntity<String> change_password(@RequestBody ChangePwReq changePwReq) {
+        String memberEmail = changePwReq.getMemberEmail();
+        String memberNewPassword = changePwReq.getMemberNewPassword();
+        log.info("changePwReq.email={}", memberEmail);
+        log.info("changePwReq.password={}", memberNewPassword);
+        MemberDto memberDto = new MemberDto(memberEmail, memberNewPassword);
+
+        memberService.changePassword(memberDto);
+        return new ResponseEntity(DefaultRes.res(StatusCode.OK, ResponseMessage.CHANGE_PW), HttpStatus.OK);
     }
 
     public int makeRandomNumber() {

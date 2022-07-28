@@ -11,6 +11,7 @@ public abstract class ResponseMessage {
     public static final String CHANGE_PW = "비밀번호 변경 성공";
     public static final String CHANGE_PW_FAIL = "비밀번호 변경 실패";
     public static final String WRONG_EMAIL_CODE = "인증번호 실패";
+    public static final String SUCCESS_EMAIL_CODE = "인증번호 성공";
     public static final String DUPLICATE_EMAIL = "중복된 이메일";
     public static final String AVAILABLE_EMAIL = "사용가능한 이메일";
     public static final String ENTER_JOIN_INFORMATION = "회원 가입 정보 입력 성공";
@@ -18,6 +19,8 @@ public abstract class ResponseMessage {
     public static final String DELETE_USER = "회원 탈퇴 성공";
     public static final String INCORRECT_APPROACH = "잘못된 접근";
     public static final String SEND_EMAIL = "이메일 발송";
+
+    public static final String ADD_ANIMAL = "반려동물추가 성공";
     public static final String SEND_EMAIL_FAIL = "이메일 발송 실패";
     public static final String INTERNAL_SERVER_ERROR = "서버 내부 에러";
     public static final String DB_ERROR = "데이터베이스 에러";

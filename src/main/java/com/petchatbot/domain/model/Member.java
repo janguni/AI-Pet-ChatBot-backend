@@ -2,10 +2,7 @@ package com.petchatbot.domain.model;
 
 import lombok.Getter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
@@ -31,6 +28,7 @@ public class Member {
         this.memberEmail = memberEmail;
         this.memberPassword = memberPassword;
     }
+
 
     public void changePassword(String password){
         this.memberPassword = password;

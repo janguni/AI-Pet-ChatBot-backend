@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class ChangePwReq {
-    private String email;
-    private String originPassword;
-    private String newPassword;
+    private String MemberEmail;
+    private String MemberNewPassword;
 }
